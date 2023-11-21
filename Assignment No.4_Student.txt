@@ -1,45 +1,43 @@
+//SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.8.7 <0.9.0;
+
+
+contract StudentData {
+    struct Student {
+        uint256 id;
+        string name;
+        uint256 marks;
+    }
+
+    Student[] public students;
+
+    function addStudent(uint256 _id, string memory _name, uint256 _marks) external {
+        Student memory newStudent = Student(_id, _name, _marks);
+        students.push(newStudent);
+    }
+
+    function getStudent(uint256 index) external view returns (uint256, string memory, uint256) {
+        require(index < students.length, "Student index out of bounds");
+        Student memory student = students[index];
+        return (student.id, student.name, student.marks);
+    }
+
+   
+    }
+
+   
+// this for fall back code 
 // SPDX-License-Identifier: MIT
-pragma solidity >= 0.8.7;
 
-// Build the Contract
-contract MarksManagmtSys
-{
-	// Create a structure for
-	// student details
-	struct Student
-	{
-		int ID;
-		string fName;
-		string lName;
-		int marks;
-	}
-	address owner;
-	int public stdCount = 0;
-	mapping(int => Student) public stdRecords;
-	modifier onlyOwner
-	{
-		require(owner == msg.sender);
-		_;
-	}
-	constructor()
-	{
-		owner=msg.sender;
-	}
-	// Create a function to add
-	// the new records
-	function addNewRecords(int _ID,string memory _fName,string memory _lName,int _marks) public onlyOwner
-	{
-		// Increase the count by 1
-		stdCount = stdCount + 1;
+pragma solidity >=0.8.3;
 
-		// Fetch the student details
-		// with the help of stdCount
-	stdRecords[stdCount] = Student(_ID, _fName,_lName, _marks);
-	}
+contract FallBack{
+    event Log(string name,address sender,uint value, bytes data);
 
-	// Create a function to add bonus marks
-	function bonusMarks(int _bonus) public onlyOwner
-	{
-	stdRecords[stdCount].marks =stdRecords[stdCount].marks + _bonus;
-	}
+    fallback() external payable {
+        emit Log ("fallback recive ",msg.sender,msg.value,msg.data);
+     }
+     receive() external payable {
+        emit Log ("recive fun",msg.sender,msg.value,"");
+      }
 }
